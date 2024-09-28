@@ -1,0 +1,30 @@
+{
+  "name": "mongo-sentinel",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DogukanGezer/mongo-sentinel.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DogukanGezer/mongo-sentinel/issues"
+  },
+  "homepage": "https://github.com/DogukanGezer/mongo-sentinel#readme",
+  "dependencies": {
+    "bson": "^6.8.0",
+    "cap": "^0.2.1",
+    "dotenv": "^16.4.5",
+    "mongoose": "^8.6.1",
+    "nodemon": "^3.1.4",
+    "pcap": "^3.1.0",
+    "undici": "^6.19.8",
+    "uuid": "^10.0.0"
+  }
+}
