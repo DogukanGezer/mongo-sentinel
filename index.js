@@ -44,7 +44,7 @@ async function init() {
 
         const bsonSize = tcpData.readInt32LE(21);
         const bsonData = tcpData.slice(21, 21 + bsonSize);
-
+        console.log(bsonData)
         try {
             const bsonObject = bson.deserialize(bsonData);
             console.log('BSON:', JSON.stringify(bsonObject, null, 2));
@@ -75,23 +75,24 @@ async function faker() {
     const connection = await mongoInit(process.env.MONGO_URI);
     const db = connection.connection.db;
     const collection = db.collection('test');
-
     const promise = await new Promise((resolve, reject) => {
         setTimeout(() => {
             resolve('done');
         }, 2000);
     });
-
+    
     console.log('Faking data...');
+    let id=2
     setInterval(async () => {
-        const record = await collection.findOne({ _id: 1 })
-        if (!record) {
+        const record = await collection.findOne({ _id: id })
+        if (true==false) {
             await collection.insertOne(fakeData);
         }
         else {
             let random = Math.floor(Math.random() * 1000000);
             random = random.toString(29);
-            await collection.updateOne({ _id: 1 }, { $set: { random: random } });
+            await collection.insertOne({ _id: id, random: random });
+            id++;
         }
         //remove interval
     }, 1000);

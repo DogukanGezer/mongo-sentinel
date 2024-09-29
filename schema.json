@@ -1,0 +1,85 @@
+
+request
+
+BSON: {
+  "update": "test",
+  "updates": [
+    {
+      "q": {
+        "_id": 1
+      },
+      "u": {
+        "$set": {
+          "random": "43f7"
+        }
+      }
+    }
+  ],
+  "ordered": true,
+  "lsid": {
+    "id": "e881a99a-05ee-47a2-8b0b-9b331e2cb7d7"
+  },
+  "txnNumber": 3,
+  "$clusterTime": {
+    "clusterTime": {
+      "$timestamp": "7419680802704719873"
+    },
+    "signature": {
+      "hash": "AAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+      "keyId": 0
+    }
+  },
+  "$db": "mongo-sentinel"
+}
+
+
+//response
+BSON: {
+  "n": 1,
+  "electionId": "7fffffff000000000000012f",
+  "opTime": {
+    "ts": {
+      "$timestamp": "7419680806999687169"
+    },
+    "t": 303
+  },
+  "nModified": 1,
+  "ok": 1,
+  "$clusterTime": {
+    "clusterTime": {
+      "$timestamp": "7419680806999687169"
+    },
+    "signature": {
+      "hash": "AAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+      "keyId": 0
+    }
+  },
+  "operationTime": {
+    "$timestamp": "7419680806999687169"
+  }
+}
+
+{
+"insert": "test",
+"documents": [
+  {
+    "_id": 14,
+    "random": "c866"
+  }
+],
+"ordered": true,
+"lsid": {
+  "id": "469b4933-0426-4ff3-a197-60274ebd7e1a"
+},
+"txnNumber": 13,
+"$clusterTime": {
+  "clusterTime": {
+    "$timestamp": "7420023261922066433"
+  },
+  "signature": {
+    "hash": "AAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+    "keyId": 0
+  }
+},
+"$db": "mongo-sentinel"
+}
