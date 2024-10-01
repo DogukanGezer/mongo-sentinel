@@ -10,6 +10,6 @@ const TestSchema = new Schema<ITest>({
     random: { type: String, required: true }
 });
 
-const Test = model<ITest>('Test', TestSchema);
+const Test = model<ITest>('test', TestSchema);
 
 export default Test;

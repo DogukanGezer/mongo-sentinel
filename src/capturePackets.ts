@@ -5,6 +5,7 @@ import bson, { BSON, Document } from "bson";
 import { MsgHeader } from "./entities/MsgHeader";
 import { OpMsg } from "./entities/OpMsg";
 import { OpCodeValueObject } from "./valueObjects/OpCodes";
+import { Request } from "./entities/Request";
 
 export default class CapturePackets {
     private pcap_session: any;
@@ -22,15 +23,14 @@ export default class CapturePackets {
             const tcpPacket = ipPacet.payload.payload.payload.data
 
             if (!tcpPacket) { return; }
-
             const messageHeader: MsgHeader = await this.parseHeader(tcpPacket);
             if (!new OpCodeValueObject(messageHeader.opCode).equals(2013)) { return; }
-
             const bodyKind: number = await this.parseBodyKind(tcpPacket);
             if (bodyKind != 0) { return; }
 
             const opMSG = await this.parseOpMsg(messageHeader, tcpPacket);
-            console.log(opMSG);
+            
+            console.log('msg', opMSG);
         });
     }
 
@@ -44,19 +44,18 @@ export default class CapturePackets {
     }
 
     private async parseBodyKind(buffer: Buffer): Promise<number> {
-        return buffer.readUInt32LE(20);
+        return buffer.readInt8(20);
     }
     private async parseOpMsg(messageHeader: MsgHeader, buffer: Buffer): Promise<OpMsg | null> {
         const flagBits = buffer.readUInt32LE(16);
         const optionalBits = flagBits >>> 16;
-        const kind = buffer.readUInt32LE(20);
-        const bsonSize = buffer.readUInt32LE(21);
+        const bsonSize = buffer.readInt32LE(21);
         const bsonData = buffer.slice(21, 21 + bsonSize);
-        if (kind != 0) { return null; }
 
         const bson = await this.parseBson(bsonData);
         const section = JSON.parse(JSON.stringify(bson));
 
+        console.log('section', section);
         return new OpMsg(
             messageHeader,
             optionalBits,
@@ -66,9 +65,17 @@ export default class CapturePackets {
 
     }
 
-    private async parseBson(buffer: Buffer): Promise<Document> {
-        return BSON.deserialize(buffer);
+    private async parseBson(buffer: Buffer): Promise<Document | null> {
+        try {
+            return BSON.deserialize(buffer);
+        }
+        catch (e: any) {
+            return null
+        }
     }
 
+    private async prepareSchema(opMessage: OpMsg): Promise<Request | Response | null> {
+        return null
+    }
 
 }
