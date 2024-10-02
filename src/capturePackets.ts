@@ -20,26 +20,30 @@ export default class CapturePackets {
         console.log("creating pcap session...");
         this.pcap_session.on("packet", async (raw_packet: any) => {
             const ipPacet = pcap.decode.packet(raw_packet);
-            const tcpPacket = ipPacet.payload.payload.payload.data
 
+            const tcpPacket = ipPacet.payload.payload.payload.data
             if (!tcpPacket) { return; }
-            const messageHeader: MsgHeader = await this.parseHeader(tcpPacket);
+
+            const buffer: Buffer = Buffer.from(tcpPacket);
+
+            const messageHeader: MsgHeader = await this.parseHeader(buffer);
             if (!new OpCodeValueObject(messageHeader.opCode).equals(2013)) { return; }
-            const bodyKind: number = await this.parseBodyKind(tcpPacket);
+
+            const bodyKind: number = await this.parseBodyKind(buffer);
             if (bodyKind != 0) { return; }
 
-            const opMSG = await this.parseOpMsg(messageHeader, tcpPacket);
-            
+            const opMSG = await this.parseOpMsg(messageHeader, buffer);
+
             console.log('msg', opMSG);
         });
     }
 
     private async parseHeader(buffer: Buffer): Promise<MsgHeader> {
         return new MsgHeader(
-            buffer.readUInt32LE(0),
-            buffer.readUInt32LE(4),
-            buffer.readUInt32LE(8),
-            buffer.readUInt32LE(12)
+            buffer.readInt32LE(0),
+            buffer.readInt32LE(4),
+            buffer.readInt32LE(8),
+            buffer.readInt32LE(12)
         )
     }
 
@@ -47,7 +51,7 @@ export default class CapturePackets {
         return buffer.readInt8(20);
     }
     private async parseOpMsg(messageHeader: MsgHeader, buffer: Buffer): Promise<OpMsg | null> {
-        const flagBits = buffer.readUInt32LE(16);
+        const flagBits = buffer.readInt32LE(16);
         const optionalBits = flagBits >>> 16;
         const bsonSize = buffer.readInt32LE(21);
         const bsonData = buffer.slice(21, 21 + bsonSize);
@@ -67,7 +71,7 @@ export default class CapturePackets {
 
     private async parseBson(buffer: Buffer): Promise<Document | null> {
         try {
-            return BSON.deserialize(buffer);
+            return bson.deserialize(buffer);
         }
         catch (e: any) {
             return null
