@@ -123,4 +123,4 @@ You can now run the MongoDB Sentinel application both locally and within Docker.
 
 Show your support by giving us a star on GitHub! ⭐
 
-[![Stargazers repo roster for @dodosec/mongo-sentinel](https://reporoster.com/stars/dodosec/mongo-sentinel)](https://github.com/DogukanGezer/mongo-sentinel/stargazers)
+[![Star History Chart](https://api.star-history.com/svg?repos=DogukanGezer/mongo-sentinel&type=Date)](https://star-history.com/#DogukanGezer/mongo-sentinel&Date)
