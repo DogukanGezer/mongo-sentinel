@@ -6,14 +6,17 @@ import { MsgHeader } from "./entities/MsgHeader";
 import { OpMsg } from "./entities/OpMsg";
 import { OpCodeValueObject } from "./valueObjects/OpCodes";
 import { Request } from "./entities/Request";
+import Logger from "./logger";
 
 export default class CapturePackets {
     private pcap_session: any;
+    private logger: Logger;
 
-    constructor(driver: string, filter: string) {
+    constructor(driver: string, filter: string, logger: Logger) {
         this.pcap_session = pcap.createSession(driver, {
             filter: filter
         });
+        this.logger = logger;
     }
 
     public async start() {
@@ -33,8 +36,12 @@ export default class CapturePackets {
             if (bodyKind != 0) { return; }
 
             const opMSG = await this.parseOpMsg(messageHeader, buffer);
+            if (opMSG == null) { return; }
 
-            console.log('msg', opMSG);
+            const schema = await this.prepareSchema(opMSG);
+            if (schema == null) { return; }
+
+            await this.logger.save(schema);
         });
     }
 
@@ -59,7 +66,6 @@ export default class CapturePackets {
         const bson = await this.parseBson(bsonData);
         const section = JSON.parse(JSON.stringify(bson));
 
-        console.log('section', section);
         return new OpMsg(
             messageHeader,
             optionalBits,
@@ -78,8 +84,60 @@ export default class CapturePackets {
         }
     }
 
-    private async prepareSchema(opMessage: OpMsg): Promise<Request | Response | null> {
-        return null
+    private async prepareSchema(opMessage: OpMsg): Promise<Request | null> {
+        //i am using sections as array bc it not came in single request, but i can't handle it.
+        const keys = Object.keys(opMessage.sections[0]);
+        const message: any = opMessage.sections[0];
+
+        let schema: Request | null = null;
+
+        const timestamp = await this.parseTimestamp(message.$clusterTime.clusterTime.$timestamp);
+        if (keys.includes('insert')) {
+            schema = new Request(
+                'insert',
+                message.documents,
+                message.ordered,
+                message.lsid.id,
+                message.txnNumber,
+                timestamp,
+                message['$db'],
+                message.insert
+            )
+
+        }
+        if (keys.includes('delete')) {
+            schema = new Request(
+                'delete',
+                message.deletes,
+                message.ordered,
+                message.lsid.id,
+                message.txnNumber,
+                timestamp,
+                message['$db'],
+                message.delete
+            )
+        }
+        if (keys.includes('update')) {
+            schema = new Request(
+                'update',
+                message.updates,
+                message.ordered,
+                message.lsid.id,
+                message.txnNumber,
+                timestamp,
+                message['$db'],
+                message.update
+            )
+        }
+
+        return schema;
+    }
+
+    private async parseTimestamp(timestamp: number): Promise<Date> {
+        const bsonTimestamp = bson.Long.fromString(timestamp.toString());
+        const timestampObj = new bson.Timestamp(bsonTimestamp)
+        const result = new Date(timestampObj.getHighBits() * 1000);
+        return result;
     }
 
 }
