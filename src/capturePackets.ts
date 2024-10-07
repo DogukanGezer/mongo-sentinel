@@ -91,7 +91,7 @@ export default class CapturePackets {
 
         let schema: Request | null = null;
 
-        const timestamp = await this.parseTimestamp(message.$clusterTime.clusterTime.$timestamp);
+        const timestamp = await this.parseTimestamp(message.$clusterTime?.clusterTime?.$timestamp);
         if (keys.includes('insert')) {
             schema = new Request(
                 'insert',
@@ -134,10 +134,14 @@ export default class CapturePackets {
     }
 
     private async parseTimestamp(timestamp: number): Promise<Date> {
-        const bsonTimestamp = bson.Long.fromString(timestamp.toString());
-        const timestampObj = new bson.Timestamp(bsonTimestamp)
-        const result = new Date(timestampObj.getHighBits() * 1000);
-        return result;
+        try {
+            const bsonTimestamp = bson.Long.fromString(timestamp.toString());
+            const timestampObj = new bson.Timestamp(bsonTimestamp)
+            let result = new Date(timestampObj.getHighBits() * 1000);
+            return result;
+        } catch (err) {
+            return new Date();   
+        }
     }
 
 }

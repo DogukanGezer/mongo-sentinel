@@ -1,13 +1,13 @@
 {
   "name": "mongo-sentinel",
   "version": "1.0.0",
-  "type":  "commonjs",
+  "type": "commonjs",
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "start": "node dist/index.js", 
+    "start": "node dist/index.js",
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
-    "build": "tsc" 
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -19,6 +19,9 @@
     "url": "https://github.com/DogukanGezer/mongo-sentinel/issues"
   },
   "homepage": "https://github.com/DogukanGezer/mongo-sentinel#readme",
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
   "dependencies": {
     "bson": "^6.8.0",
     "cap": "^0.2.1",
@@ -26,6 +29,7 @@
     "mongoose": "^8.6.1",
     "nodemon": "^3.1.4",
     "pcap": "^3.1.0",
+    "tsc": "^2.0.4",
     "undici": "^6.19.8",
     "uuid": "^10.0.0"
   }
