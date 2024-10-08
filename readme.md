@@ -40,6 +40,7 @@ Before running the application, ensure the environment variables are set up corr
 | MONGO_LOG_URI       | MongoDB connection string for the logging database.                                               | `mongodb://127.0.0.1:27017/mongo-sentinel?authSource=admin`                                   |
 | STORAGE_TYPE        | Defines where logs will be stored. Options are local or mongodb.                                  | `"local"` or `"mongodb"`                                                                      |
 | LOG_FILE_LOCATION   | Directory for log file storage (used when STORAGE_TYPE is set to local).                          | `"/home/ubuntu/logs"`                                                                         |
+| TEST                | Allows testing operations to MongoDB.                                                             | `"true"` or `"false"`                                                                         |
 
 ### 📝 Example Env
 ```
@@ -47,6 +48,7 @@ MONGO_URI=mongodb://127.0.0.1:27017/mongo-sentinel?authSource=admin
 MONGO_LOG_URI=mongodb://127.0.0.1:27017/mongo-sentinel?authSource=admin
 STORAGE_TYPE=local
 LOG_FILE_LOCATION=/home/ubuntu/logs
+TEST=true
 ```
 
 ### 💻 Running Locally
