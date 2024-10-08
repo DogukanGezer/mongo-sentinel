@@ -6,13 +6,14 @@ import Logger from "./logger";
 dotenv.config()
 
 class MongoSentinel {
+    private driver: string = process.env.DRIVER as string;
+    private port: string = process.env.LISTEN_PORT as string;
     private capturePackets: CapturePackets | null = null;
     private testOperations: TestOperations;
-    private activeTest: boolean = false;
+    private activeTest: boolean = process.env.TEST as unknown as boolean;
+
     constructor() {
         const connectionString: string = process.env.MONGO_URI as string;
-        this.activeTest = process.env.TEST as unknown as boolean;
-
         if (connectionString == undefined) {
             console.log("connection string not passed");
         }
@@ -23,7 +24,7 @@ class MongoSentinel {
     public async init() {
         const Logger: Logger = await this.prepareLogger()
 
-        this.capturePackets = await new CapturePackets('lo', 'tcp port 27017', Logger);
+        this.capturePackets = await new CapturePackets(this.driver, `tcp port ${this.port}`, Logger);
         this.capturePackets.start();
 
         if (this.activeTest) {

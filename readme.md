@@ -36,6 +36,8 @@ Before running the application, ensure the environment variables are set up corr
 
 | Variable            | Description                                                                                       | Example                                                                                       |
 |---------------------|---------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
+| DRIVER              | Network interface to listen on.                                                                   | `lo`                                                                                          |
+| LISTEN_PORT         | Port number on which the application will listen for MongoDB traffic.                             | `27017`                                                                                       |
 | MONGO_URI           | MongoDB connection string for the main database.                                                  | `mongodb://127.0.0.1:27017/mongo-sentinel?authSource=admin`                                   |
 | MONGO_LOG_URI       | MongoDB connection string for the logging database.                                               | `mongodb://127.0.0.1:27017/mongo-sentinel?authSource=admin`                                   |
 | STORAGE_TYPE        | Defines where logs will be stored. Options are local or mongodb.                                  | `"local"` or `"mongodb"`                                                                      |
@@ -44,6 +46,8 @@ Before running the application, ensure the environment variables are set up corr
 
 ### 📝 Example Env
 ```
+DRIVER=lo
+LISTEN_PORT=27017
 MONGO_URI=mongodb://127.0.0.1:27017/mongo-sentinel?authSource=admin
 MONGO_LOG_URI=mongodb://127.0.0.1:27017/mongo-sentinel?authSource=admin
 STORAGE_TYPE=local
